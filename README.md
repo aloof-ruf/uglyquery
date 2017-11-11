@@ -1,31 +1,87 @@
-# Handlers
+# Ugly Query
 
-Handlers are functions that fire off based on a name. They have the following
-features:
+Uglyquery is a request body format that adds incredible flexibility and functionality to your API. Simply setup
+independent functions, stick 'em in and enpoint, and then experience ugly query for yourself!
 
-- a _trigger name_
-- a _function_
-- and _metadata_
+## Begin with _handlers_
 
-## Trigger Names
+Handlers are simply functions that you want to use in your queries. They can do anything you normally do with
+an API: insert/query a database, read from a file, perform complex computations- whatever! 
 
-Trigger names are strings that must be unique within an _endpoint_ (see below).
-Readable endpoints are preferred, as they will be what 
+Lets setup some functions for our future queries:
 
-## Handler Functions
+```javascript
+// myHandlers.js
+const UglyHandler = require('uglyquery').UglyHandler;
+
+module.exports = {
+  matrixStore: [
+    new UglyHandler('toFile', (args) => {  }),
+    new UglyHandler('fromFile', (args) => {  })
+  ],
+  matrixWork: [
+    new UglyHandler('add', (args) => {  }),
+    new UglyHandler('mult', (args) => {  })
+  ]
+};
+```
+
+## Now stuff them in an _endpoint_
+
+Endpoints are simply places to put a set of handlers. They are usually tied to a particular path, but that is
+up to you!
+
+Let's put those functions we made in an endpoint for our express server...
+
+```javascript
+// routes/index.js
+```
+
+## Enough setup, let's start querying!
+
+
+## Pre/post processing
+
+Well that was wonderful but there are some concerns. I don't want just _anyone_ to be able to use these functions.
+Let's restrict the "matrix work" functions to signed-in users and the "matrix store" functions to administrators.
+We can pull this off with _pre-processing functions_ which can be placed on individual endpoints or handlers.
+
+
 
 ## Metadata
 
-Handler metadata is not required, but is often useful for understanding a 
-particular handler. Metadata must be a map/object/dictionary/etc. although
-entries may be whatever you desire. Metadata is returned via _metadata queries_
-(described below).
+There is another feature that both Endpoints and Handlers have that has not been discussed: _metadata_. UglyQuery
+has specific commands that can be used to investigate default or user-defined metadata. Let's go back to our
+matrix-api:
 
-# Endpoints
+```javascript
+// myHandlers.js
+const UglyHandler = require('uglyquery').UglyHandler;
 
-Endpoints are a set of handlers. Enpoints must be given handlers with *unique 
-trigger names*, although the same handler (or same trigger name) can exist in 
-two (or more) different endpoints simultaneously. 
+module.exports = {
+  matrixStore: [
+    new UglyHandler(
+      'toFile',
+      (args) => {  },
+      {
+
+      }),
+    new UglyHandler('fromFile', (args) => {  })
+  ],
+  matrixWork: [
+    new UglyHandler('add', (args) => {  }),
+    new UglyHandler('mult', (args) => {  })
+  ]
+};
+```
+
+Now we can query that metadata with something like this...
+
+```sh
+```
+
+Wonderful! We can feel free to mix metadata queries with other UglyQuery functions or our Handlers. There is
+currently no specification on what you can keep in your metadata- it is simply a set of key/value pairs.
 
 # Queries
 
